@@ -1,0 +1,26 @@
+name: Maganghub Attendance Reminder
+
+on:
+  schedule:
+    # 20.00 & 21.00 WIB = 13.00 & 14.00 UTC
+    # Senin–Jumat
+    - cron: "0 13,14 * * 1-5"
+  workflow_dispatch:
+
+jobs:
+  send-email:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+
+      - name: Send reminder email
+        run: go run main.go
+        env:
+          SMTP_EMAIL: ${{ secrets.SMTP_EMAIL }}
+          APP_PASSWORD: ${{ secrets.APP_PASSWORD }}
+          REMINDER_EMAILS: ${{ secrets.REMINDER_EMAILS }}
